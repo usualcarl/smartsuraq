@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Тест: {{ quiz.title }}</title>
+</head>
+<body>
+    <h1>Тест: {{ quiz.title }}</h1>
+    <form method="post" action="{% url 'submit_answers' quiz.id %}">
+        {% csrf_token %}
+        {% for question in questions %}
+            <div>
+                <p>{{ question.text }}</p>
+                <input type="radio" name="question_{{ question.id }}" value="1"> {{ question.answer1 }}<br>
+                <input type="radio" name="question_{{ question.id }}" value="2"> {{ question.answer2 }}<br>
+                <input type="radio" name="question_{{ question.id }}" value="3"> {{ question.answer3 }}<br>
+                {% if question.answer4 %}<input type="radio" name="question_{{ question.id }}" value="4"> {{ question.answer4 }}<br>{% endif %}
+                {% if question.answer5 %}<input type="radio" name="question_{{ question.id }}" value="5"> {{ question.answer5 }}<br>{% endif %}
+                {% if question.answer6 %}<input type="radio" name="question_{{ question.id }}" value="6"> {{ question.answer6 }}<br>{% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit">Отправить ответы</button>
+    </form>
+</body>
+</html>

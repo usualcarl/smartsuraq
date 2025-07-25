@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Результаты теста</title>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+    <h1>Результаты теста</h1>
+    <p>Вы набрали {{ score }} из {{ total }} возможных баллов.</p>
+
+    <h2>Подробные результаты:</h2>
+    <ul>
+        {% for result in results %}
+            <li>
+                <strong>Вопрос:</strong> {{ result.question }}<br>
+                <strong>Ваш ответ:</strong> {{ result.selected_answer }}<br>
+                <strong>Правильный ответ:</strong> {{ result.correct_answer }}<br>
+                <strong>Результат:</strong> {% if result.is_correct %}✅ Правильно{% else %}❌ Неправильно{% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <button id="get-recommendation">Получить рекомендацию</button>
+
+    <div id="recommendation" style="display: none;">
+        <h2>Рекомендации для улучшения:</h2>
+        <p id="recommendation-text"></p>
+    </div>
+
+    <a href="{% url 'index' %}">Вернуться на главную страницу</a>
+
+    <script>
+        document.getElementById('get-recommendation').addEventListener('click', async () => {
+            try {
+                const incorrectQuestions = JSON.parse('{{ incorrect_questions_json|safe }}');
+
+                if (!Array.isArray(incorrectQuestions)) {
+                    throw new Error("Incorrect questions data is not an array.");
+                }
+
+                const response = await fetch('/get_recommendation/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        incorrect_questions: incorrectQuestions
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                document.getElementById('recommendation-text').innerHTML = data.recommendation;
+                document.getElementById('recommendation').style.display = 'block';
+            } catch (error) {
+                console.error("Ошибка при получении рекомендации:", error);
+                document.getElementById('recommendation-text').innerText = "Не удалось получить рекомендацию. Попробуйте позже.";
+                document.getElementById('recommendation').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

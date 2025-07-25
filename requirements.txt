@@ -1,0 +1,7 @@
+Django>=4.2,<5.0
+yt-dlp>=2023.8.8
+whisper @ git+https://github.com/openai/whisper.git@main
+openai>=0.27.0
+python-dotenv>=1.0.0
+numpy<2
+torch  
