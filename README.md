@@ -34,8 +34,8 @@
 
 ### 1. Клонирование проекта
 ```bash
-git clone https://github.com/your-repo/youtube-quiz-generator.git
-cd youtube-quiz-generator
+git clone https://github.com/usualcarl/smartsuraq.git
+cd smartsuraq
 ```
 
 ### 2. Установка зависимостей
